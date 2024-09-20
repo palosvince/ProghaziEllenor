@@ -76,19 +76,14 @@ namespace ProghaziEllenor
             mytempfile = Path.Combine(mytempfolder, "temp.plang");
             try
             {
-                Label:
                 Console.WriteLine("Írd be a plang.jar elérési útvonalát, vagy húzd az ablakra a fájlt! (utána enter)");
                 string plangpath = Console.ReadLine() ?? "";
-                if (!File.Exists(plangpath))
+                while (!File.Exists(plangpath) || Path.GetFileName(plangpath) != "plang.jar")
                 {
-                    Console.WriteLine("ellenőrizd a plang.jar fájlt! (biztos létezik?)");
-                    goto Label;
+                    Console.WriteLine("Valami hiba van! Ellenőrizd a megadott fájlt! (biztos létezik?, biztos plang.jar a neve?)");
+                    plangpath = Console.ReadLine() ?? "";
                 }
-                if (Path.GetFileName(plangpath) != "plang.jar")
-                {
-                    Console.WriteLine("ellenőrizd a plang.jar fájlt! (biztos azt a fájlt adtad meg?)");
-                    goto Label;
-                }
+
                 Console.WriteLine("Mostantól mindig húzd az ablakra az ellenőrzendő fájlt, majd üss egy enter!");
                 while (true)
                 {
@@ -98,9 +93,17 @@ namespace ProghaziEllenor
                     int het;
                     string feladat;
                     string programpath;
+                    bool csakListazz = false;
+
                     try
                     {
-                        programpath = Console.ReadLine();
+                        programpath = Console.ReadLine() ?? throw new Exception();
+                        if (programpath.StartsWith("?"))
+                        { 
+                            csakListazz = true;
+                            programpath = programpath[1..] + ".plang";
+                        }
+
                         var filename = Path.GetFileName(programpath);
                         var sf = filename.Split(".");
                         if (sf.Length != 3) throw new Exception();
@@ -119,6 +122,25 @@ namespace ProghaziEllenor
                     if (tesztek.Count == 0)
                     {
                         Console.WriteLine("Ehhez a feladathoz nincsenek tesztek...");
+                        continue;
+                    }
+
+
+                    if (csakListazz)
+                    {
+                        foreach (var teszt in tesztek)
+                        {
+                            Console.WriteLine("A teszt:");
+                            foreach (var sor in teszt.Item1.Split("\n"))
+                                Console.WriteLine("> " + sor);
+                            Console.WriteLine("A várt válasz:");
+                            foreach (var sor in teszt.Item2.Split("\n"))
+                                Console.WriteLine("> " + sor);
+                            Console.WriteLine();
+                            Console.WriteLine("================");
+                            Console.WriteLine();
+                        }
+                        continue;
                     }
 
                     foreach (var teszt in tesztek)
@@ -163,31 +185,36 @@ namespace ProghaziEllenor
 
                         if (error != "")
                         {
-                            Console.WriteLine("SIKERTELEN FUTÁS:");
+                            Console.WriteLine("========[FUTÁSIDEJŰ HIBA!]========");
                             Console.WriteLine("A teszt:");
                             foreach (var sor in teszt.Item1.Split("\n"))
                                 Console.WriteLine("> " + sor);
+                            Console.WriteLine();
                             Console.WriteLine("A program hibája hiba:");
                             foreach (var sor in error.Split("\n"))
                                 Console.WriteLine("> " + sor);
+                            Console.WriteLine();
 
                         }
                         else
                         {
                             if (output == teszt.Item2)
-                                Console.WriteLine("SIKERES TESZT!");
+                                Console.WriteLine("=========[SIKERES TESZT!]=========");
                             else
                             {
-                                Console.WriteLine("SIKERTELEN TESZT!");
+                                Console.WriteLine("=========[HIBÁS VÁLASZ!]==========");
                                 Console.WriteLine("A teszt:");
                                 foreach (var sor in teszt.Item1.Split("\n"))
                                     Console.WriteLine("> " + sor);
+                                Console.WriteLine();
                                 Console.WriteLine("A program válasza:");
                                 foreach (var sor in output.Split("\n"))
                                     Console.WriteLine("> " + sor);
+                                Console.WriteLine();
                                 Console.WriteLine("A várt válasz:");
                                 foreach (var sor in teszt.Item2.Split("\n"))
                                     Console.WriteLine("> " + sor);
+                                Console.WriteLine();
                             }
                         }
                     }
