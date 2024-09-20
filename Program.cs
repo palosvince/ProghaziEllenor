@@ -113,7 +113,13 @@ namespace ProghaziEllenor
                         Console.WriteLine("hibás fájlnév!");
                         continue;
                     }
+
                     var tesztek = Tesztek(het, feladat);
+
+                    if (tesztek.Count == 0)
+                    {
+                        Console.WriteLine("Ehhez a feladathoz nincsenek tesztek...");
+                    }
 
                     foreach (var teszt in tesztek)
                     {
@@ -158,8 +164,13 @@ namespace ProghaziEllenor
                         if (error != "")
                         {
                             Console.WriteLine("SIKERTELEN FUTÁS:");
+                            Console.WriteLine("A teszt:");
+                            foreach (var sor in teszt.Item1.Split("\n"))
+                                Console.WriteLine("> " + sor);
+                            Console.WriteLine("A program hibája hiba:");
                             foreach (var sor in error.Split("\n"))
                                 Console.WriteLine("> " + sor);
+
                         }
                         else
                         {
@@ -168,8 +179,14 @@ namespace ProghaziEllenor
                             else
                             {
                                 Console.WriteLine("SIKERTELEN TESZT!");
-                                string message = $"A teszt:\n{teszt.Item1}\n\nA program válasza:\n{output}\n\nA várt válasz:\n{teszt.Item2}";
-                                foreach (var sor in message.Split("\n"))
+                                Console.WriteLine("A teszt:");
+                                foreach (var sor in teszt.Item1.Split("\n"))
+                                    Console.WriteLine("> " + sor);
+                                Console.WriteLine("A program válasza:");
+                                foreach (var sor in output.Split("\n"))
+                                    Console.WriteLine("> " + sor);
+                                Console.WriteLine("A várt válasz:");
+                                foreach (var sor in teszt.Item2.Split("\n"))
                                     Console.WriteLine("> " + sor);
                             }
                         }
