@@ -49,8 +49,6 @@ namespace ProghaziEllenor
                         Console.WriteLine("nem sikerült letölteni a megfelelő teszteket!");
                         return new List<(string, string)>();
                     }
-                    if (output.EndsWith("\n"))      // HA \n-re végződik, akkor azt leszedjük!!! elég drasztikus, de szükségesnek tűnik
-                        output = output.Substring(0, output.Length - 1);
                     ret.Add((input, output));
 
                 }
@@ -84,7 +82,9 @@ namespace ProghaziEllenor
                     plangpath = Console.ReadLine() ?? "";
                 }
 
-                Console.WriteLine("Mostantól mindig húzd az ablakra az ellenőrzendő fájlt, majd üss egy enter!");
+                Console.WriteLine();
+                Console.WriteLine("Mostantól, ha egy programodat akarod ellenőrizni, húzd rá az ablakra, majd üss egy entert!");
+                Console.WriteLine("Ha pedig egy feladat tesztjeire vagy kíváncsi, íjr be egy kérdőjelet, majd a feladat kódszámát (pl ?2.26a)!");
                 while (true)
                 {
                     Console.WriteLine();
@@ -121,6 +121,7 @@ namespace ProghaziEllenor
 
                     if (tesztek.Count == 0)
                     {
+                        Console.WriteLine();
                         Console.WriteLine("Ehhez a feladathoz nincsenek tesztek...");
                         continue;
                     }
@@ -198,7 +199,14 @@ namespace ProghaziEllenor
                         }
                         else
                         {
-                            if (output == teszt.Item2)
+                            List<string> o = new List<string>(output.TrimEnd().Split("\n"));
+                            List<string> t = new List<string>(teszt.Item2.TrimEnd().Split("\n"));
+                            for (int i = 0; i < o.Count; i++)
+                                o[i] = o[i].TrimEnd();
+                            for (int i = 0; i < t.Count; i++)
+                                t[i] = t[i].TrimEnd();
+
+                            if (Enumerable.SequenceEqual<string>(o, t))
                                 Console.WriteLine("=========[SIKERES TESZT!]=========");
                             else
                             {
