@@ -169,8 +169,17 @@ namespace ProghaziEllenor
             return (output, compError, runError);
         }
 
+
         static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("ProghaziEllenor v3");
+            Console.WriteLine("készítette: Pálos Vince - palos.vince@hallgato.ppke.hu");
+            Console.WriteLine("Forráskód: https://github.com/palosvince/ProghaziEllenor");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+
+
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // Latin2 magic
 
             Console.CancelKeyPress += (o, e) => { Stop(); };
